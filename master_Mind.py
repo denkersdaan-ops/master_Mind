@@ -13,6 +13,8 @@ import hashlib
 USERNAME_HASH = "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918" # hash for "admin"
 PASSWORD_HASH = "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8" # hash for "password"
 
+colorInput = ["red", "green", "blue", "yellow", "purple", "orange"]
+
 def hash_text(text):
     return hashlib.sha256(text.encode()).hexdigest()
 
@@ -36,17 +38,25 @@ def get_Feedback(secret, guess):
     
     return black_Pegs, white_Pegs
 
+def colorToCode(guess):
+    ans = ''
+    for a in guess:
+        ans += str(colorInput.index(a) + 1)
+    
+    return ans
+
 def show_Secret(mystery):
     print(mystery)
 
 def play_Mastermind():
     print("Welcome to Mastermind!")
     print("Guess the 4-digit code. Each digit is from 1 to 6. You have 10 attempts.")
+    print("u can also use red green blue yellow purple and orange. it works with numbers in that order")
     secret_Code = generate_Code()
     attempts = 10
 
     for attempt in range(1, attempts + 1):
-        while not valid_Guess:
+        while True:
             guess = input(f"Attempt {attempt}: ").strip()
             if guess.lower() == "login":
                 login()
@@ -57,7 +67,10 @@ def play_Mastermind():
                 else:
                     print("Login eerst met 'login' om 'cheat' te gebruiken.")
                 continue
-            if len(guess) == 4 and all(c in "123456" for c in guess):
+            if len(guess.split(' ')) == 4 and all(c in colorInput for c in guess.lower().split(' ')):
+                guess = colorToCode(guess.lower().split(' '))
+
+            if len(guess) == 4 and all(c in "123456" for c in guess): 
                 break
             print("Invalid input. Enter 4 digits, each from 1 to 6.")
 
